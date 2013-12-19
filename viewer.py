@@ -47,8 +47,11 @@ class View:
     try:
       fp = open('view.htm', 'r')
       return fp.read()
-    finally:
+    except:
       return web.notfound() # you can send an 404 error here if you want
+
+  def POST( self, args ):
+    return self.GET( args )
 
 """ RESOURCES
   Passes on the resources available in the folders img, css and js

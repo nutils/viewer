@@ -2,6 +2,7 @@
 
 # Temporary files
 *.swp
+todo.txt
 
 # C extensions
 *.so
