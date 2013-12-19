@@ -1,0 +1,42 @@
+$def with (projects)
+<div class="table-responsive">
+  <table class="table ">
+    <thead>
+      <tr>
+          <th>Projects</th>
+          <th>Last Changed</th>
+          <th>Image</th>
+          <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    $for project in projects:
+      <tr>
+          <td>$project['name']</td>
+          <td>
+            $project['lastchanged'][2]-$project['lastchanged'][1]-$project['lastchanged'][0] at $project['lastchanged'][3].replace('-',':')
+          </td>
+          <td>
+            $if project['img'] :
+                <img src="/res/$project['img']" alt="$project['name']" style="height: 64px; width: auto;" />
+            $else:
+                <img data-src="holder.js/64x64" class="img-rounded" alt="No image available">
+          </td>
+          <td>
+            <a href="">
+              <span class="glyphicon glyphicon-folder-open"></span>
+              open
+            </a>
+            <a href="/view/?url=/res/$project['name']/${'/'.join(project['lastchanged'])}/log.html&advanced=true">
+              <span class="glyphicon glyphicon-folder-open"></span>
+             latest
+            </a>
+            <a href="">
+              <span class="glyphicon glyphicon-remove"></span>
+              delete
+            </a>
+          </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

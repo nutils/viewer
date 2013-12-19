@@ -1,0 +1,83 @@
+html, body{
+  font-size: 0.9em;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.container{
+  width: 100%;
+  padding: 0 15px;
+}
+
+.breadcrumb{
+  padding: 0 -15px;
+  margin: 0;
+}
+
+.toplayer{
+  z-index: 1000;
+  position: relative;
+}
+
+.navigation{
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.navbar-collapse{
+  padding: 20px 0 !important;
+}
+
+.navbar-nav, .navbar-nav li{
+  float: none;
+}
+
+.navbar-nav, .navbar-form{
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.navbar-nav li a{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.nav li a{
+  position: static;
+}
+
+.nutils-toolbar-menu{
+  position: fixed;
+  bottom: 15px;
+  right: 0;
+  z-index: 1;
+}
+
+.nutils-toolbar-menu a{
+  display: block;
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  margin-top: 2px;
+  background: #eee;
+}
+
+.nutils-toolbar-menu i{
+  font-size: 1.2em;
+}
+
+pre{
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+
+pre .info{ color: #555; }
+pre .warning{ color: #f30; }
+pre .error{ color: #f00; }
+
