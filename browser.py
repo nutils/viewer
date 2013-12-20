@@ -68,7 +68,7 @@ class Folder( File ):
 #----------------------------------------
 
 class Projects( Folder ):
-  __SLOTS__     = ['basepath', 'curpath']
+  __SLOTS__     = ['basepath', 'curpath', '__imgtypes__', '__retime__', '__reslashes__', '__cleaned__']
   __imgtypes__  = ['png', 'jpg', 'jpeg', 'gif']
   __retime__    = re.compile(r'^(\d{2}\-){2}\d{2}$')
   __reslashes__ = re.compile(r'[\\/]{2,}')
@@ -102,21 +102,19 @@ class Projects( Folder ):
     # Check out all the files found
     for fname in files:
       path = os.path.join( self.path, fname )
+      curpath = os.path.join(self.curpath, fname)
 
-      # Find out whether there is a logfile
-      logs = ['log.html', 'log.htm']
-      haslog = False
-      for log in logs:
-        logfile = os.path.join( path, log )
-        haslog  = os.path.isfile( logfile )
-        if haslog == True:
-          break
+      # See if we are in the log folder
+      # (we require 5 to get the full path)
+      # <project>/<year>/<month>/<date>/<time>
+      haslog = len(curpath.split('/')) == 5
+
 
       # If this is a directory we assume it contains results
       if os.path.isdir( path ) and not os.path.islink( path ) :
         res = {
           'name': fname,
-          'path': os.path.join(self.curpath, fname),
+          'path': curpath,
           'haslog': haslog,
           'img': self.findimage( fname ),
           'lastchanged': self.lastchanged( fname )

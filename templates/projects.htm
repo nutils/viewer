@@ -30,7 +30,10 @@ $var breadcrumb = breadcrumb
             </a>
             <a href="/view/?url=/res/${'/'.join(project['lastchanged'])}/log.html&advanced=true">
               <span class="glyphicon glyphicon-folder-open"></span>
-             latest
+              $if project['haslog']:
+                view
+              $else:
+                latest
             </a>
             <a href="">
               <span class="glyphicon glyphicon-remove"></span>
