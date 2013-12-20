@@ -2,7 +2,10 @@
 
 import os, re
 
+#----------------------------------------
+
 class File( object ):
+  __SLOTS__ = ['name', 'file']
   name = ''
   path = ''
 
@@ -13,7 +16,10 @@ class File( object ):
   def __str__( self ):
     return self.path
 
+#----------------------------------------
+
 class Folder( File ):
+  __SLOTS__ = ['depth', 'children']
   depth = 0
   children = []
 
@@ -59,49 +65,83 @@ class Folder( File ):
       tree += child.asciitree()
     return tree
 
+#----------------------------------------
+
 class Projects( Folder ):
+  __SLOTS__ = ['basepath', 'curpath']
+  basepath = ''
+  curpath = ''
   __imgtypes__ = ['png', 'jpg', 'jpeg', 'gif']
   __retime__ = re.compile(r'^(\d{2}\-){2}\d{2}$')
 
+  def __init__( self, basepath, curpath, depth=0 ):
+    # Store the separate paths to see
+    # how many folders we are away from the base
+    self.basepath = basepath
+    self.curpath = curpath
+    self.path = os.path.join(basepath, curpath)
+
+    self.name = os.path.basename( curpath )
+    self.depth = depth
+
   def overview( self ):
+    """
+    Projects.overview()
+
+    Lists all the directories in the current directory
+    It also looks up the last result and an image in the directory
+
+    """
+    # Get the files in the current directory
     files = os.listdir( self.path )
-    projects = []
+    results = []
+
+    # Check out all the files found
     for fname in files:
       path = os.path.join( self.path, fname )
+
+      # If this is a directory we assume it contains results
       if os.path.isdir( path ) and not os.path.islink( path ) :
-        project = { \
-          'name': fname, \
-          'img': self.findimage( fname ), \
-          'lastchanged': self.lastchanged( fname ) \
+        res = {
+          'name': fname,
+          'path': os.path.join(self.curpath, fname),
+          'img': self.findimage( fname ),
+          'lastchanged': self.lastchanged( fname )
         }
-        projects.append( project )
-    return projects
 
-  def findimage( self, projectpath, imgpath='' ):
-    path = os.path.join( self.path, projectpath, imgpath )
-    files = os.listdir( path )
-    files.sort()
+        results.append( res )
 
-    for fname in files:
-      subpath = os.path.join( path, fname )
-      if os.path.isdir( subpath ) and not os.path.islink( subpath ):
-        # If an image was found in one of the folders return it
-        newimgpath = os.path.join( imgpath, fname)
-        result = self.findimage( projectpath, newimgpath )
-        if result != False:
-          return result
-      elif os.path.isfile( subpath ) and not os.path.islink( subpath ):
+    return results
+
+  def findimage( self, subpath, topdown=False ):
+    """
+    Projects.findimage( subpath, [ imgpath ] )
+
+    Find an image in <current path>/<subpath>
+
+    @param string subpath   Where to look for the image?
+    @param bool topdown     Look in opposite direction
+    @return string path     The image path
+
+    """
+    # Where are we looking right now
+    location = os.path.join( self.path, subpath )
+
+    for root, dirs, files in os.walk( location, topdown=topdown):
+      for fname in files:
+        subpath = os.path.join( root, fname )
+
         # Check if this is an image
         lowerpath = subpath.lower()
         for ext in self.__imgtypes__:
           if lowerpath.endswith('.' + ext):
-            newimgpath = os.path.join( projectpath, imgpath, fname)
-            return newimgpath
+            return subpath
 
     # Found nothing
     return False
 
   def lastchanged( self, projectpath ):
+    return ['00','00','0000','00-00-00']
     folders = []
 
     # Try to find the last /year/month/day/time path for the project

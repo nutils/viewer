@@ -6,8 +6,9 @@ import browser
 
 # Specify the urls
 urls = (
-  '/(index)?/?', 'Index',
-  '/index/(.*)', 'Index',
+  '', 'Index',
+  '/(index)?', 'Index',
+  '/(index)/(.*)', 'Index',
   '/view/?(.*)', 'View',
   '/search/?(.*)', 'Search',
   '/(res|img|css|js|fonts)/(.*)', 'Resources'#,
@@ -34,23 +35,26 @@ class Index(BasePage):
 
   def GET( self, *args ):
     projectdir = os.path.expanduser('~/public_html')
-    browse = browser.Projects( projectdir)
-    print args
+
+    subpath = ''
+    if len(args) > 1 and args[1] != '':
+      subpath = args[1]
+    browse = browser.Projects( projectdir, subpath )
     projects = browse.overview()
     return self.render.projects(projects=projects)
 
   def POST( self ):
-    return 'Hello World'
+    return self.GET( args )
 
 class View:
-  def GET( self, args ):
+  def GET( self, *args ):
     try:
       fp = open('view.htm', 'r')
       return fp.read()
     except:
       return web.notfound() # you can send an 404 error here if you want
 
-  def POST( self, args ):
+  def POST( self, *args ):
     return self.GET( args )
 
 """ RESOURCES
