@@ -68,11 +68,13 @@ class Folder( File ):
 #----------------------------------------
 
 class Projects( Folder ):
-  __SLOTS__ = ['basepath', 'curpath']
-  basepath = ''
-  curpath = ''
-  __imgtypes__ = ['png', 'jpg', 'jpeg', 'gif']
-  __retime__ = re.compile(r'^(\d{2}\-){2}\d{2}$')
+  __SLOTS__     = ['basepath', 'curpath']
+  __imgtypes__  = ['png', 'jpg', 'jpeg', 'gif']
+  __retime__    = re.compile(r'^(\d{2}\-){2}\d{2}$')
+  __reslashes__ = re.compile(r'[\\/]{2,}')
+
+  basepath      = ''
+  curpath       = ''
 
   def __init__( self, basepath, curpath, depth=0 ):
     # Store the separate paths to see
@@ -100,11 +102,21 @@ class Projects( Folder ):
     for fname in files:
       path = os.path.join( self.path, fname )
 
+      # Find out whether there is a logfile
+      logs = ['log.html', 'log.htm']
+      haslog = False
+      for log in logs:
+        logfile = os.path.join( path, log )
+        haslog  = os.path.isfile( logfile )
+        if haslog == True:
+          break
+
       # If this is a directory we assume it contains results
       if os.path.isdir( path ) and not os.path.islink( path ) :
         res = {
           'name': fname,
           'path': os.path.join(self.curpath, fname),
+          'haslog': haslog,
           'img': self.findimage( fname ),
           'lastchanged': self.lastchanged( fname )
         }
@@ -115,7 +127,7 @@ class Projects( Folder ):
 
   def findimage( self, subpath, topdown=False ):
     """
-    Projects.findimage( subpath, [ imgpath ] )
+    Projects.findimage( subpath, [ topdown ] )
 
     Find an image in <current path>/<subpath>
 
@@ -140,39 +152,37 @@ class Projects( Folder ):
     # Found nothing
     return False
 
-  def lastchanged( self, projectpath ):
-    return ['00','00','0000','00-00-00']
-    folders = []
+  def lastchanged( self, subpath ):
+    """
+    Projects.findimage( subpath )
 
-    # Try to find the last /year/month/day/time path for the project
-    for i in range(4):
-      path = os.sep.join( [self.path, projectpath] + folders )
+    Find the folder containing the last simulation
 
-      if not os.path.isdir( path ):
-        continue
+    @param string subpath       Where to look for the image?
+    @return tuple lastchanged   The image path
 
-      files = os.listdir( path )
-      files.sort()
-      cnt = len(files)
+    """
+    # Where are we looking right now
+    location = os.path.join( self.path, subpath )
 
-      # Start looking for the last date/time folder
-      for j in range(cnt-1, -1, -1):
-        # folders year, month and date may only contian digits
-        if i < 3 and not files[j].isdigit():
-          continue
+    # Clean double slashes and slashes at the beginning and end
+    basepath = self.basepath.strip('/').strip('\\')
+    basepath = self.__reslashes__.sub( os.path.sep, basepath )
 
-        # Time folder should match regex pattern self.__retime__
-        if i == 3 and self.__retime__.match(files[j]) == None:
-          continue
+    for root, dirs, files in os.walk( location, topdown=True):
+      # Clean double slashes and slashes at the beginning and end
+      path = self.__reslashes__.sub( os.path.sep, root )
+      path = path.replace( basepath, '' )# Subtract base
+      path = path.strip('/').strip('\\')# No slashes at start or end
+      path = path.split( os.path.sep )
 
-        # Found the last folder
-        folders.append( files[j] )
-        break
+      # See how many folders we have
+      # (we require 5 to get the full path)
+      # <project>/<year>/<month>/<date>/<time>
+      depth = len(path)
+      if depth == 5:
+        return tuple(path[1:])
 
-    return folders
 
-
-# homepath = os.path.expanduser('~/public_html')
-# homefolder = Folder( homepath )
-# print homefolder.contents()
-# homefolder.buildtree( maxdepth=6, files=False )
+    # Not found
+    return None # ['00','00','0000','00-00-00']
