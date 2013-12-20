@@ -72,6 +72,7 @@ class Projects( Folder ):
   __imgtypes__  = ['png', 'jpg', 'jpeg', 'gif']
   __retime__    = re.compile(r'^(\d{2}\-){2}\d{2}$')
   __reslashes__ = re.compile(r'[\\/]{2,}')
+  __cleaned__   = {}
 
   basepath      = ''
   curpath       = ''
@@ -152,6 +153,48 @@ class Projects( Folder ):
     # Found nothing
     return False
 
+  def relpath( self, fullpath, basepath=None ):
+    """
+    Projects.stripbase( fullpath, [ basepath ] )
+
+    Remove the basepath from the full path
+    and return the relative path without
+    prepended os.path.sep
+
+    example:
+
+    basepath = '/this/is//the/base//'
+    fullpath = '/this/is/the/base/plus/some/extra///'
+    --------------------------------------------------
+    relpath = 'plus/some/extra'
+
+    @param string fullpath
+    @param string basepath
+    @return string relpath
+
+    """
+
+    # Use project basepath if none is set
+    if not basepath:
+      basepath = self.basepath
+
+    # Compute a hash for the basepath
+    hsh = str(hash(basepath))
+    if not hsh in self.__cleaned__:
+      self.__cleaned__[hsh] = self.basepath.strip('/').strip('\\')
+      self.__cleaned__[hsh] = self.__reslashes__.sub( os.path.sep, basepath )
+
+    # Clean double slashes and slashes at the beginning and end
+    path = self.__reslashes__.sub( os.path.sep, fullpath )
+
+    # Subtract base
+    path = path.replace( self.__cleaned__[hsh], '' )
+
+    # No slashes at start or end
+    path = path.strip('/\\ ')
+
+    return path
+
   def lastchanged( self, subpath ):
     """
     Projects.findimage( subpath )
@@ -165,23 +208,16 @@ class Projects( Folder ):
     # Where are we looking right now
     location = os.path.join( self.path, subpath )
 
-    # Clean double slashes and slashes at the beginning and end
-    basepath = self.basepath.strip('/').strip('\\')
-    basepath = self.__reslashes__.sub( os.path.sep, basepath )
-
     for root, dirs, files in os.walk( location, topdown=True):
       # Clean double slashes and slashes at the beginning and end
-      path = self.__reslashes__.sub( os.path.sep, root )
-      path = path.replace( basepath, '' )# Subtract base
-      path = path.strip('/').strip('\\')# No slashes at start or end
+      path = self.relpath( root )
       path = path.split( os.path.sep )
 
       # See how many folders we have
       # (we require 5 to get the full path)
       # <project>/<year>/<month>/<date>/<time>
-      depth = len(path)
-      if depth == 5:
-        return tuple(path[1:])
+      if len(path) == 5:
+        return path
 
 
     # Not found

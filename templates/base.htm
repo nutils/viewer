@@ -45,9 +45,10 @@ $def with (page)
     </div>
 
     <ol class="breadcrumb toplayer">
-      <li><a href="#">Projects</a></li>
-      <li><a href="#">Library</a></li>
-      <li class="active">Data</li>
+      <li><a href="/index/">Projects</a></li>
+      $if 'breadcrumb' in page:
+        $for link in page['breadcrumb']:
+          <li><a href="/index/$link['url']">$link['name']</a></li>
     </ol>
 
     <div class="container">

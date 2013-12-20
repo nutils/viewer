@@ -40,8 +40,12 @@ class Index(BasePage):
     if len(args) > 1 and args[1] != '':
       subpath = args[1]
     browse = browser.Projects( projectdir, subpath )
+    curpath = browse.curpath.split(os.path.sep)
+    breadcrumb = []
+    for i in range(len(curpath)):
+      breadcrumb.append({'name': curpath[i], 'url': '/'.join(curpath[:i+1]) })
     projects = browse.overview()
-    return self.render.projects(projects=projects)
+    return self.render.projects(projects=projects, breadcrumb=breadcrumb)
 
   def POST( self ):
     return self.GET( args )

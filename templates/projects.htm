@@ -1,4 +1,5 @@
-$def with (projects)
+$def with (projects, breadcrumb)
+$var breadcrumb = breadcrumb
 <div class="table-responsive">
   <table class="table ">
     <thead>
@@ -14,7 +15,7 @@ $def with (projects)
       <tr>
           <td>$project['name']</td>
           <td>
-            $project['lastchanged'][2]-$project['lastchanged'][1]-$project['lastchanged'][0] at $project['lastchanged'][3].replace('-',':')
+            $project['lastchanged'][3]-$project['lastchanged'][2]-$project['lastchanged'][1] at $project['lastchanged'][4].replace('-',':')
           </td>
           <td>
             $if project['img'] :
@@ -27,7 +28,7 @@ $def with (projects)
               <span class="glyphicon glyphicon-folder-open"></span>
               open
             </a>
-            <a href="/view/?url=/res/$project['name']/${'/'.join(project['lastchanged'])}/log.html&advanced=true">
+            <a href="/view/?url=/res/${'/'.join(project['lastchanged'])}/log.html&advanced=true">
               <span class="glyphicon glyphicon-folder-open"></span>
              latest
             </a>
