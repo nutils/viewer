@@ -77,7 +77,7 @@ pre{
   border-radius: 0;
 }
 
-pre .info{ color: #555; }
-pre .warning{ color: #f30; }
-pre .error{ color: #f00; }
+pre .info{ color: #555555; }
+pre .warning{ color: #FFA500; }
+pre .error{ color: #FF3300; }
 
