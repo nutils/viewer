@@ -4,8 +4,8 @@
     <title> Nutils -- Projects</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/nutils.min.css" rel="stylesheet">
+    <link type="text/css" href="/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="/css/nutils.min.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -16,16 +16,18 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script type="text/javascript" src="/js/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/jquery.lazyload.min.js"></script>
-    <script src="/js/jquery.scrollstop.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.lazyload.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.scrollstop.js"></script>
 
-    <script src="/js/nutils.min.js"></script>
+    <script type="text/javascript" src="/js/nutils.min.js"></script>
     <script type="text/javascript">
     <!--
 
+    var viewer;
+
     $(function (){
-      var viewer = new NutilsViewer();
+      viewer = new NutilsViewer();
       var params = viewer.getUrlParams();
       viewer.loadLogFile( params.url );
     });
@@ -87,18 +89,53 @@
         </div><!-- sidemenu -->
         <div class="col-xs-10 col-sm-9">
 
-          <div id="content">
+          <div id="content" class="buffer-top">
+
+            <!-- Top controls -->
+            <div class="btn-group">
+              <button class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-folder-open"></span>
+                Open
+              </button>
+              <button class="btn btn-default btn-sm"
+                onclick="viewer.refresh();">
+                <span class="glyphicon glyphicon-refresh"></span>
+                Refresh
+              </button>
+            </div>
+
+            <!-- Messages -->
+            <div id="nutils-info" class="message message-info">
+              <a class="message-close" href="#" onclick="$(this).parent().hide('slow');">&times;</a>
+              <div class="message-body"></div>
+            </div>
+
+            <div id="nutils-warning" class="message message-warning">
+              <a class="message-close" href="#" onclick="$(this).parent().hide('slow');">&times;</a>
+              <div class="message-body"></div>
+            </div>
+
+            <div id="nutils-error" class="message message-error">
+              <a class="message-close" href="#" onclick="$(this).parent().hide('slow');">&times;</a>
+              <div class="message-body">
+                <noscript>You have to enable JavaScript to use the Nutils viewer.</noscript>
+              </div>
+            </div>
+
+
+            <!-- Logfile -->
             <pre></pre>
           </div>
 
           <footer>
-            <a href="nutils.org">nutils.org</a> ::
+            <a href="http://www.nutils.org">nutils.org</a> ::
             <a href="https://github.com/nutils/nutils">github</a>
             <a name="footer">&nbsp;</a>
           </footer>
         </div><!-- content -->
 
         <div class="nutils-toolbar col-xs-1">
+          <!-- Right toolbar with buttons -->
           <div class="nutils-toolbar-menu affix">
             <a href="#" class="">
               <i class="glyphicon glyphicon-circle-arrow-up" title="Scroll to the top of the page"></i>

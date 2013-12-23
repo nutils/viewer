@@ -20,6 +20,30 @@ html, body{
   position: relative;
 }
 
+.buffer-top{ padding-top: 20px; }
+.loading{ background: url('../img/loading.gif') center no-repeat; }
+
+.message {
+  margin: 20px 0;
+  padding: 20px;
+  border-left: 4px solid #eee;
+  position: relative;
+  display: none;
+}
+
+.message-close{
+  position: absolute;
+  top: -2px;
+  right: 6px;
+  font-size: 24px;
+}
+
+.message-close:hover{ text-decoration: none; }
+
+.message-warning { background-color: #faf8f0; border-color: #faebcc; }
+.message-error { background-color: #fdf7f7; border-color: #eed3d7; }
+.message-info { background-color: #f4f8fa; border-color: #bce8f1; }
+
 .navigation{
   background: #fff;
   border-bottom: 1px solid #eee;
@@ -75,9 +99,9 @@ pre{
   background: none;
   border: 0;
   border-radius: 0;
+  min-height: 200px;
 }
 
 pre .info{ color: #555555; }
 pre .warning{ color: #FFA500; }
 pre .error{ color: #FF3300; }
-

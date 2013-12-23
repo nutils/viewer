@@ -10,6 +10,7 @@ urls = (
   '/(index)?', 'Index',
   '/(index)/(.*)', 'Index',
   '/view/?(.*)', 'View',
+  '/proxy/?(.*)', 'Proxy',
   '/search/?(.*)', 'Search',
   '/(res|img|css|js|fonts)/(.*)', 'Resources'#,
   #'/(.*)', 'Data'
@@ -81,6 +82,23 @@ class Resources:
       return fp.read()
     except:
       return web.notfound() # you can send an 404 error here if you want
+
+  def POST( self, *args ):
+    return self.GET( args )
+
+""" PROXY
+  Proxy server to fetch external files and pass them as local files, since ajax can only load local files.
+"""
+class Proxy:
+  def GET(self, url):
+    try:
+      import urllib
+      return urllib.urlopen( url ).read()
+    except:
+      return web.notfound() # you can send an 404 error here if you want
+
+  def POST( self, *args ):
+    return self.GET( args )
 
 if __name__ == "__main__":
   web.config.debug = True
