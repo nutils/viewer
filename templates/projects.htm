@@ -38,7 +38,16 @@ $var breadcrumb = breadcrumb
     <tbody>
     $for project in projects:
       <tr>
-          <td>$project['name']</td>
+          <td>
+            $if not project['haslog']:
+              <a href="/index/$project['path']">
+                $project['name']
+              </a>
+            $else:
+              <a href="/view.htm?url=/res/${'/'.join(project['lastchanged'])}/log.html&advanced=true">
+                $project['name']
+              </a>
+          </td>
           <td>
             $project['lastchanged'][3]-$project['lastchanged'][2]-$project['lastchanged'][1] at $project['lastchanged'][4].replace('-',':')
           </td>
@@ -53,17 +62,13 @@ $var breadcrumb = breadcrumb
               <a href="/index/$project['path']">
                 <span class="glyphicon glyphicon-folder-open"></span>
                 open
-              </a>
+              </a> &nbsp;
             <a href="/view.htm?url=/res/${'/'.join(project['lastchanged'])}/log.html&advanced=true">
               <span class="glyphicon glyphicon-folder-open"></span>
               $if project['haslog']:
                 view
               $else:
                 latest
-            </a>
-            <a href="">
-              <span class="glyphicon glyphicon-remove"></span>
-              delete
             </a>
           </td>
       </tr>
