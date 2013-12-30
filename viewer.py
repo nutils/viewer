@@ -9,7 +9,7 @@ urls = (
   '', 'Index',
   '/(index)?', 'Index',
   '/(index)/(.*)', 'Index',
-  '/view/?(.*)', 'View',
+  '/view.htm?(.*)', 'View',
   '/proxy/?(.*)', 'Proxy',
   '/search/?(.*)', 'Search',
   '/(res|img|css|js|fonts)/(.*)', 'Resources'#,
@@ -35,17 +35,35 @@ class BasePage:
 class Index(BasePage):
 
   def GET( self, *args ):
+    # Define a basepath
     projectdir = os.path.expanduser('~/public_html')
 
+    # Get the subpath from the URL
     subpath = ''
     if len(args) > 1 and args[1] != '':
       subpath = args[1]
+
+    # Get path segments
+    subpathseg = subpath.split('/')
+
+    # Do not allow paths into the log folder
+    if len(subpathseg) > 4:
+      subpathseg = subpathseg[0:4]
+      subpath = '/'.join( subpathseg )
+
+    # Get all the subfolders
     browse = browser.Projects( projectdir, subpath )
-    curpath = browse.curpath.split(os.path.sep)
-    breadcrumb = []
-    for i in range(len(curpath)):
-      breadcrumb.append({'name': curpath[i], 'url': '/'.join(curpath[:i+1]) })
     projects = browse.overview()
+
+    # Create a breadcrumb menu
+    breadcrumb = []
+    for i in range(len(subpathseg)):
+      breadcrumb.append({
+        'name': subpathseg[i],
+        'url': '/'.join(subpathseg[:i+1])
+      })
+
+
     return self.render.projects(projects=projects, breadcrumb=breadcrumb)
 
   def POST( self ):

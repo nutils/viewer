@@ -4,8 +4,8 @@
     <title> Nutils -- Projects</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link type="text/css" href="/css/bootstrap.min.css" rel="stylesheet">
-    <link type="text/css" href="/css/nutils.min.css" rel="stylesheet">
+    <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="css/nutils.min.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -14,13 +14,13 @@
     <![endif]-->
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/jquery.lazyload.min.js"></script>
-    <script type="text/javascript" src="/js/jquery.scrollstop.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery.lazyload.min.js"></script>
+    <script type="text/javascript" src="js/jquery.scrollstop.js"></script>
 
-    <script type="text/javascript" src="/js/nutils.min.js"></script>
+    <script type="text/javascript" src="js/nutils.min.js"></script>
     <script type="text/javascript">
     <!--
 
@@ -28,8 +28,6 @@
 
     $(function (){
       viewer = new NutilsViewer();
-      var params = viewer.getUrlParams();
-      viewer.loadLogFile( params.url );
     });
 
     // -->
@@ -50,35 +48,33 @@
       </div>
     </div>
 
-    <ol class="breadcrumb toplayer">
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Library</a></li>
-      <li class="active">Data</li>
+    <ol class="breadcrumb toplayer nutils-advanced">
+      <li><a href="/index/">Projects</a></li>
     </ol>
 
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-sm-2 navigation toplayer">
           <div class="navbar-collapse collapse">
-            <form class="navbar-form" action="/search" method="post">
+            <form class="navbar-form nutils-advanced" action="/search" method="post">
               <div class="form-group">
                 <input type="text" placeholder="Search" class="form-control">
               </div>
             </form>
             <ul class="nav navbar-nav">
               <li>
-                <a href="/index">
+                <a href="/">
                   <i class="glyphicon glyphicon-home"></i>
                   Projects
                 </a>
               </li>
-              <li>
+              <li class="nutils-advanced">
                 <a href="/calendar">
                   <i class="glyphicon glyphicon-calendar"></i>
                   Calendar
                 </a>
               </li>
-              <li>
+              <li class="nutils-advanced">
                 <a href="/download/">
                   <i class="glyphicon glyphicon-cloud-download"></i>
                   Download ZIP
