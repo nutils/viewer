@@ -3,6 +3,7 @@
 #from finity import prop
 import web, os, sys, re
 import browser
+import tempfile, zipfile, hashlib
 
 # Specify the urls
 urls = (
@@ -11,6 +12,7 @@ urls = (
   '/(index)/(.*)', 'Index',
   '/view.htm?(.*)', 'View',
   '/proxy/?(.*)', 'Proxy',
+  '/zip/(.*)', 'DownloadZip',
   '/search/?(.*)', 'Search',
   '/(res|img|css|js|fonts)/(.*)', 'Resources'#,
   #'/(.*)', 'Data'
@@ -68,6 +70,27 @@ class Index(BasePage):
 
   def POST( self ):
     return self.GET( args )
+
+
+class DownloadZip:
+  def GET(self, *args):
+    try:
+      tmpdir = tempfile.gettempdir()
+      tmpname = hashlib.md5('nutils-%s' % os.getpid() ).hexdigest() + '.zip'
+      tmp = os.path.join( tmpdir, tmpname )
+      path = '/home/rody/Documents/tue/templates/beamer'
+
+      relpath = path.replace( os.path.realname(os.getcwd()), '' )
+      return relpath
+      zipf = zipfile.ZipFile(tmp, 'w')
+      for root, dirs, files in os.walk(path):
+        for fname in files:
+          fpath = os.path.join(root, fname)
+          zipf.write(os.path.join(root, fname))
+      zipf.close()
+      return tmp
+    except:
+      return web.notfound()
 
 class View:
   def GET( self, *args ):
