@@ -136,24 +136,24 @@ class Projects( Folder ):
 
     """
     # Where are we looking right now
-    location = os.path.join( self.path, subpath )
+    location = os.sep.join([ self.path, subpath ])
 
     for root, dirs, files in os.walk( location, topdown=topdown):
       for fname in files:
-        subpath = os.path.join( root, fname )
-
+        fpath = os.sep.join([ root, fname ])
+        relpath = self.relpath( fpath ).strip('/\\')
         # Check if this is an image
-        lowerpath = subpath.lower()
+        lowerpath = fpath.lower()
         for ext in self.__imgtypes__:
           if lowerpath.endswith('.' + ext):
-            return subpath
+            return relpath
 
     # Found nothing
     return False
 
   def relpath( self, fullpath, basepath=None ):
     """
-    Projects.stripbase( fullpath, [ basepath ] )
+    Projects.relpath( fullpath, [ basepath ] )
 
     Remove the basepath from the full path
     and return the relative path without

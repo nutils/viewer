@@ -32,7 +32,6 @@ $var breadcrumb = breadcrumb
           <th>Projects</th>
           <th>Last Changed</th>
           <th>Image</th>
-          <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -40,36 +39,29 @@ $var breadcrumb = breadcrumb
       <tr>
           <td>
             $if not project['haslog']:
-              <a href="/index/$project['path']">
-                $project['name']
+              <a class="btn btn-sm btn-default" href="/index/$project['path']">
+                <span class="glyphicon glyphicon-folder-open"></span>
+                &nbsp; $project['name']
+              </a>
+              <a class="btn btn-sm btn-default" href="/view.htm?url=/res/${'/'.join(project['lastchanged'])}/log.html&advanced=true">
+                <span class="glyphicon glyphicon-folder-open"></span>
+                &nbsp; latest
               </a>
             $else:
-              <a href="/view.htm?url=/res/${'/'.join(project['lastchanged'])}/log.html&advanced=true">
-                $project['name']
+              <a class="btn btn-sm btn-default" href="/view.htm?url=/res/${'/'.join(project['lastchanged'])}/log.html&advanced=true">
+                <span class="glyphicon glyphicon-folder-open"></span>
+                &nbsp; $project['name']
               </a>
           </td>
           <td>
-            $project['lastchanged'][3]-$project['lastchanged'][2]-$project['lastchanged'][1] at $project['lastchanged'][4].replace('-',':')
+            <strong>$project['lastchanged'][3]-$project['lastchanged'][2]-$project['lastchanged'][1]</strong><br />
+            at $project['lastchanged'][4].replace('-',':')
           </td>
           <td>
             $if project['img'] :
                 <img src="/res/$project['img']" alt="$project['name']" style="height: 64px; width: auto;" />
             $else:
                 <img data-src="holder.js/64x64" class="img-rounded" alt="No image available">
-          </td>
-          <td>
-            $if not project['haslog']:
-              <a href="/index/$project['path']">
-                <span class="glyphicon glyphicon-folder-open"></span>
-                open
-              </a> &nbsp;
-            <a href="/view.htm?url=/res/${'/'.join(project['lastchanged'])}/log.html&advanced=true">
-              <span class="glyphicon glyphicon-folder-open"></span>
-              $if project['haslog']:
-                view
-              $else:
-                latest
-            </a>
           </td>
       </tr>
     </tbody>

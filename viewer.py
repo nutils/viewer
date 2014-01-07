@@ -1,8 +1,7 @@
 #! /usr/bin/env python
 
-#from finity import prop
 import web, os, sys, re
-import browser
+import browser, util
 import tempfile, zipfile, hashlib
 
 # Specify the urls
@@ -15,11 +14,13 @@ urls = (
   '/zip/(.*)', 'DownloadZip',
   '/search/?(.*)', 'Search',
   '/(res|img|css|js|fonts)/(.*)', 'Resources'#,
-  #'/(.*)', 'Data'
 )
 
-basedir = os.path.expanduser('~/public_html')
 
+# Get configuration
+conf = util.Settings()
+conf.load('~/.nutilsrc')
+conf['outdir'] = conf['outdir']
 
 # ----------------------------------------
 # Templates
@@ -38,7 +39,7 @@ class Index(BasePage):
 
   def GET( self, *args ):
     # Define a basepath
-    projectdir = os.path.expanduser('~/public_html')
+    projectdir = os.path.expanduser( conf['outdir'] )
 
     # Get the subpath from the URL
     subpath = ''
@@ -77,7 +78,7 @@ class DownloadZip:
     try:
       tmpdir = tempfile.gettempdir()
       tmpname = hashlib.md5('nutils-%s' % os.getpid() ).hexdigest() + '.zip'
-      tmp = os.path.join( tmpdir, tmpname )
+      tmp = os.sep.join([ tmpdir, tmpname ])
       path = '/home/rody/Documents/tue/templates/beamer'
 
       relpath = path.replace( os.path.realname(os.getcwd()), '' )
@@ -85,8 +86,8 @@ class DownloadZip:
       zipf = zipfile.ZipFile(tmp, 'w')
       for root, dirs, files in os.walk(path):
         for fname in files:
-          fpath = os.path.join(root, fname)
-          zipf.write(os.path.join(root, fname))
+          fpath = os.sep.join([ root, fname ])
+          zipf.write(os.sep.join([root, fname ]))
       zipf.close()
       return tmp
     except:
@@ -113,11 +114,11 @@ class Resources:
         fname = fname.replace('~','').replace('..','')
         rx = re.compile(r'[\\/]{2,}')
         fname = rx.sub(os.sep, fname)
-        basename = os.path.expanduser('~/public_html')
-        path = os.path.join( basename, fname )
+        basename = os.path.expanduser( conf['outdir'] )
+        path = os.sep.join([ basename, fname ])
       else:
         fname = os.path.basename(fname)
-        path = os.path.join(media, fname)
+        path = os.sep.join([ media, fname ])
 
       fp = open(path, 'r')
       return fp.read()
