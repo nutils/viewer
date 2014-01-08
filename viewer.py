@@ -134,8 +134,51 @@ class Resources:
 class Proxy:
   def GET(self, url):
     try:
-      import urllib
-      return urllib.urlopen( url ).read()
+      import httplib
+
+      # Request headers send
+      headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:26.0) Gecko/20100101 Firefox/26.0",
+        "Cache-Control": "no-cache"
+      }
+
+      # Split url into protocol and address
+      pos = url.find("://")
+      if pos > -1 :
+        prot = url[:pos]
+        addr = url[(pos+3):]
+      else:
+        prot = "http"
+        addr = url
+
+      # Figure out the domain
+      parts  = addr.split('/')
+      domain = parts[0]
+      query  = '/'.join(parts[1:])
+
+      # Get the params
+      pos = query.find('?')
+      params = ''
+      if pos > -1 :
+        path = '/' + query[:pos]
+        if pos+1 < len(query) :
+          # Split into [name,value] array, append [''] if no value was supplied
+          params = query[(pos+1):]
+      else:
+        path = '/' + query
+
+      # Connect to the website
+      conn = httplib.HTTPConnection( domain )
+      conn.request("GET", path, params, headers )
+
+      # Get the responce
+      res = conn.getresponse()
+      html = res.read()
+
+      # Close connection
+      conn.close()
+
+      return html
     except:
       return web.notfound() # you can send an 404 error here if you want
 
@@ -146,5 +189,3 @@ if __name__ == "__main__":
   web.config.debug = True
   app = web.application(urls, globals())
   app.run()
-
-
