@@ -22,22 +22,41 @@ conf = util.Settings()
 conf.load('~/.nutilsrc')
 conf['outdir'] = conf['outdir']
 
-# ----------------------------------------
-# Templates
-
 class BasePage:
+  ''' BasePage
+  Abstract page class
+  '''
 
   def __init__( self ):
+    ''' BasePage.__init__()
+    Set up the templates for the viewer
+
+    @return void
+    '''
     self.render = web.template.render('templates', base='base')
 
+  def POST( self, *args ):
+    ''' BasePage.POST( [ args ] )
+    Default to the GET behaviour when no POST is found
 
-""" INDEX
-  Renders a table with an overview of all projects in the
-  output directory
-"""
+    @param list args
+    @return string
+    '''
+    return self.GET( args )
+
 class Index(BasePage):
+  ''' Index
+  Overview the projects in the viewer
+  '''
 
   def GET( self, *args ):
+    ''' Index.GET( [ args ] )
+    Returns the page for a GET request
+
+    @param list args
+    @return string
+    '''
+
     # Define a basepath
     projectdir = os.path.expanduser( conf['outdir'] )
 
@@ -66,20 +85,27 @@ class Index(BasePage):
         'url': '/'.join(subpathseg[:i+1])
       })
 
-
     return self.render.projects(projects=projects, breadcrumb=breadcrumb)
 
-  def POST( self ):
-    return self.GET( args )
-
-
 class DownloadZip:
+  ''' DownloadZip
+  Page that serves a zip file of the requested project
+  '''
+
   def GET(self, *args):
+    ''' DownloadZip.GET( [ args ] )
+    Returns the zip file on a GET request
+
+    @param list args
+    @return string
+    '''
     try:
       tmpdir = tempfile.gettempdir()
       tmpname = hashlib.md5('nutils-%s' % os.getpid() ).hexdigest() + '.zip'
       tmp = os.sep.join([ tmpdir, tmpname ])
-      path = '/home/rody/Documents/tue/templates/beamer'
+      return
+      # TODO: path
+      path = '/path/to/folder/to/make/zip'
 
       relpath = path.replace( os.path.realname(os.getcwd()), '' )
       return relpath
@@ -94,7 +120,17 @@ class DownloadZip:
       return web.notfound()
 
 class View:
+  ''' View
+  Display the nutils viewer <view.htm>
+
+  '''
   def GET( self, *args ):
+    ''' View.GET( [ args ] )
+    Returns the view.htm file on a GET request
+
+    @param list args
+    @return string
+    '''
     try:
       fp = open('view.htm', 'r')
       return fp.read()
@@ -102,13 +138,27 @@ class View:
       return web.notfound() # you can send an 404 error here if you want
 
   def POST( self, *args ):
+    ''' VIEW.POST( url )
+    Returns the resource on a POST request
+
+    @param list args
+    @return string
+    '''
     return self.GET( args )
 
-""" RESOURCES
-  Passes on the resources available in the folders img, css and js
-"""
 class Resources:
+  ''' Resources
+  Make res, img, css, js and fonts available
+  '''
+
   def GET(self, media, fname):
+    ''' Resources.GET( media, fname )
+    Returns the resource file on a GET request
+
+    @param string media
+    @param string fname
+    @return string
+    '''
     try:
       if media == 'res':
         fname = fname.replace('~','').replace('..','')
@@ -126,13 +176,27 @@ class Resources:
       return web.notfound() # you can send an 404 error here if you want
 
   def POST( self, *args ):
+    ''' Resources.POST( args )
+    Returns the resource on a POST request
+
+    @param list args
+    @return string
+    '''
     return self.GET( args )
 
-""" PROXY
-  Proxy server to fetch external files and pass them as local files, since ajax can only load local files.
-"""
 class Proxy:
+  ''' Proxy
+  Proxy server to fetch external files and pass them
+  as local files, since AJAX can only load local files.
+  '''
+
   def GET(self, url):
+    ''' Proxy.GET( url )
+    Returns the resource on a GET request
+
+    @param string url
+    @return string
+    '''
     try:
       import httplib
 
@@ -183,6 +247,12 @@ class Proxy:
       return web.notfound() # you can send an 404 error here if you want
 
   def POST( self, *args ):
+    ''' Proxy.POST( args )
+    Returns the resource on a POST request
+
+    @param list args
+    @return string
+    '''
     return self.GET( args )
 
 if __name__ == "__main__":
