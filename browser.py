@@ -100,7 +100,7 @@ class Projects( Folder ):
     results = []
 
     # Check out all the files found
-    for fname in files:
+    for fname in sorted(files, reverse=True):
       path = os.path.join( self.path, fname )
       curpath = os.path.join(self.curpath, fname)
 
