@@ -1,10 +1,10 @@
 Nutils Viewer
 =============
 
-The nutils viewer is a small python-bases server that serves an
-overview of all projects in your favorite web-browser.
+The nutils viewer is a small python-based server that makes an
+overview of all projects accessible in your favorite web-browser.
 
-To start the server, run the command `python viewer.py`. The output
+To start the viewer, run the command `python viewer.py`. The output
 will notify you that the viewer is running and the output can be found
 on <http://0.0.0.0:8080>.
 
